@@ -906,6 +906,23 @@ PrefabInstance:
       propertyPath: m_Name
       value: character
       objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: eed336fcc50de4a8ab145ffa4cb3c894, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: df0746defa41b4aa4923d15f326840c4, type: 2}
+    - target: {fileID: 5866666021909216657, guid: eed336fcc50de4a8ab145ffa4cb3c894, type: 3}
+      propertyPath: m_WarningMessage
+      value: "\nBinding warning: Some generic clip(s) animate transforms that are
+        already bound by a Humanoid avatar. These transforms can only be changed
+        by Humanoid clips.\n\tTransform 'mixamorig1:Hips'\n\tTransform 'mixamorig1:LeftHandThumb1'\n\tTransform
+        'mixamorig1:LeftHandPinky2'\n\tTransform 'mixamorig1:RightHand'\n\tTransform
+        'mixamorig1:LeftHandMiddle2'\n\tTransform 'mixamorig1:RightFoot'\n\tTransform
+        'mixamorig1:Spine1'\n\tTransform 'mixamorig1:RightLeg'\n\tTransform 'mixamorig1:RightHandMiddle2'\n\tTransform
+        'mixamorig1:Hips'\n\tand more ...\n\tFrom animation clip 'Walking'\n\tFrom
+        animation clip 'Running'\n\tFrom animation clip 'Treading Water'\n\tFrom
+        animation clip 'Walking'\n\tFrom animation clip 'Running'\n\tFrom animation
+        clip 'Treading Water'"
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -1636,10 +1653,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3738d1a5685054082aea7788304b38f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerLandMovement
-  walkSpeed: 12.89
-  runSpeed: 21.38
-  gravity: -6.79
-  jumpHeight: 5.56
+  walkSpeed: 8.61
+  runSpeed: 13.7
+  gravity: -9.02
+  jumpHeight: 2.92
   mouseSensitivity: 30
   cameraTransform: {fileID: 1440312016}
   groundDistance: 0.4
