@@ -34,6 +34,11 @@ public class PlayerLandMovement : MonoBehaviour
     private void Awake()
     {
         _characterController = GetComponent<CharacterController>();
+
+        if (characterAnimator == null)
+        {
+            Debug.LogError("characterAnimator is not assigned on " + gameObject.name, gameObject);
+        }
     }
     void Start()
     {
