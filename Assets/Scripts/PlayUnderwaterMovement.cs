@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
-public class PlayUnderwaterMovement : MonoBehaviour
+public class PlayerUnderwaterMovement : MonoBehaviour
 {
     [Header("Swim Speed")]
     public float swimSpeed = 3f;
