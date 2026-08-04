@@ -8,7 +8,7 @@ public class PlayerModeSwitch : MonoBehaviour
     public CharacterController characterController;
         
     //Tag water volume trigger as "WaterVolume" (Unity)
-    private bool _isUnderwater = false;
+    private bool _isUnderwater;
 
     void OnTriggerEnter(Collider other)
     {

@@ -8,7 +8,7 @@ public class WorldZone
     public string zoneID;
     public string zoneName;
     public bool isUnlocked;
-    public List<string> prerequisiteAritfactsID = new List<string>();
+    public List<string> prerequisiteArtifactsID = new List<string>();
     public int requiredGearType;    //Minimum gear requirements
     public ZoneTone tone;
 }

@@ -8,25 +8,16 @@ public class PlayerLandMovement : MonoBehaviour
     public float runSpeed = 19f;
     public float gravity = -9.81f;
     [FormerlySerializedAs("jumpForce")] public float jumpHeight = 4.5f;
-
-    [Header("Look")] 
-    public float mouseSensitivity = 5f;
-    public Transform cameraTransform;
-
+    
     [Header("Ground Check")] 
     public float groundDistance = 0.4f;
     public LayerMask groundMask;
-
-    [Header("Camera")] 
-    public Camera CameraRig;
-    public Camera CameraTarget;
-    public float CameraFollowSpeed;
-
+    
     [SerializeField] private Animator characterAnimator;
+    [SerializeField] private Transform playerCamera;
     private CharacterController _characterController;
     private Vector2 _moveInput;
     private Vector3 _velocity;
-    private float _xRotation;
     private bool _isGrounded;
     private bool _sprinting;
 
@@ -37,7 +28,9 @@ public class PlayerLandMovement : MonoBehaviour
         if (characterAnimator == null)
         {
             Debug.LogError("characterAnimator is not assigned on " + gameObject.name, gameObject);
+            enabled = false;
         }
+        
     }
 
     void Start()
@@ -50,7 +43,7 @@ public class PlayerLandMovement : MonoBehaviour
     {
         CheckIfGrounded();
         HandleMove();
-        HandleLook();
+        HandleMovementAnimation();
     }
 
     void HandleMove()
@@ -61,11 +54,25 @@ public class PlayerLandMovement : MonoBehaviour
         float v = Input.GetAxis("Vertical");
         _moveInput = new Vector2(h, v);
         _sprinting = Input.GetKey(KeyCode.LeftShift);
+        
+        Vector3 camForward = Camera.main.transform.forward;
+        Vector3 camRight = Camera.main.transform.right;
+        camForward.y = 0; 
+        camRight.y = 0;
+        camForward.Normalize();
+        camRight.Normalize();
 
-        Vector3 move = transform.right * h + transform.forward * v;
+        Vector3 move = camRight * h + camForward * v;
         float speed = _sprinting ? runSpeed : walkSpeed;
         _characterController.Move(move * (speed * Time.deltaTime));
 
+        //Turn left and right
+        if (move.sqrMagnitude > 0.1f)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(move);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime);
+        }
+        
         //Jump
         if (Input.GetButtonDown("Jump") && _isGrounded)
         {
@@ -77,19 +84,13 @@ public class PlayerLandMovement : MonoBehaviour
         _characterController.Move(_velocity * Time.deltaTime);
     }
 
-    void HandleLook()
+    void HandleMovementAnimation()
     {
-        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
-        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
         float speed = _moveInput.magnitude * (_sprinting ? 1f : 0.5f);
-
         characterAnimator.SetFloat("Speed", speed, 0.1f, Time.deltaTime);
-        _xRotation -= mouseY;
-        _xRotation = Mathf.Clamp(_xRotation, -90f, 90f);
-
-        cameraTransform.localRotation = Quaternion.Euler(_xRotation, 0f, 0f);
-        transform.Rotate(Vector3.up, mouseX);
     }
+
+   
 
     //Called by PlayerSwitchMode when entering water
     public void EnableLandMode(bool enable)
