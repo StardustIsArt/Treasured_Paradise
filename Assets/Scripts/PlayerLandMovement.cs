@@ -3,6 +3,8 @@ using UnityEngine.Serialization;
 
 public class PlayerLandMovement : MonoBehaviour
 {
+    private static readonly int speed1 = Animator.StringToHash("Speed");
+
     [Header("Movement")] 
     public float walkSpeed = 10f;
     public float runSpeed = 19f;
@@ -87,7 +89,7 @@ public class PlayerLandMovement : MonoBehaviour
     void HandleMovementAnimation()
     {
         float speed = _moveInput.magnitude * (_sprinting ? 1f : 0.5f);
-        characterAnimator.SetFloat("Speed", speed, 0.1f, Time.deltaTime);
+        characterAnimator.SetFloat(speed1, speed, 0.1f, Time.deltaTime);
     }
 
    
