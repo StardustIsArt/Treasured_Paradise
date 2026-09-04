@@ -3,36 +3,56 @@ using UnityEngine.Serialization;
 
 public class PlayerLandMovement : MonoBehaviour
 {
-    private static readonly int speed1 = Animator.StringToHash("Speed");
+    //private static readonly int speed1 = Animator.StringToHash("Speed");
 
-    [Header("Movement")] 
-    public float walkSpeed = 10f;
-    public float runSpeed = 19f;
-    public float gravity = -9.81f;
-    [FormerlySerializedAs("jumpForce")] public float jumpHeight = 4.5f;
     
+    [Header("Movement")] 
+    public float walkSpeed = 2.5f;
+    public float runSpeed = 5f;
+    public float acceleration = 0.1f;
+    public float deceleration = 0.5f;
+    public float gravity = -9.81f;
+    public float jumpHeight = 1.5f;
+   
     [Header("Ground Check")] 
-    public float groundDistance = 0.4f;
+    public float groundDistance = 1f;
     public LayerMask groundMask;
     
-    [SerializeField] private Animator characterAnimator;
     [SerializeField] private Transform playerCamera;
+    
+    Animator _animator;
     private CharacterController _characterController;
-    private Vector2 _moveInput;
+    [SerializeField] private Animator characterAnimator;
     private Vector3 _velocity;
+    private float _currentVelocityX;
+    private float _currentVelocityZ;
     private bool _isGrounded;
-    private bool _sprinting;
+    private bool _isRunning;
+
+    private int _velocityXHash;
+    private int _velocityZHash;
+    private int _isWalkingHash;
+    private int _isRunningHash;
+    //  private float _velocity = 0.01f;
+    
+    private Camera _camera;
 
     private void Awake()
     {
+        _camera = Camera.main;
         _characterController = GetComponent<CharacterController>();
-
-        if (characterAnimator == null)
+        _animator = GetComponentInChildren<Animator>();
+        
+        if (_animator == null)
         {
             Debug.LogError("characterAnimator is not assigned on " + gameObject.name, gameObject);
             enabled = false;
+            return;
         }
-        
+        _isWalkingHash = Animator.StringToHash("isWalking"); 
+        _isRunningHash = Animator.StringToHash("isRunning");
+        _velocityXHash = Animator.StringToHash("VelocityX");
+        _velocityZHash = Animator.StringToHash("VelocityZ");
     }
 
     void Start()
@@ -44,54 +64,64 @@ public class PlayerLandMovement : MonoBehaviour
     void Update()
     {
         CheckIfGrounded();
+        FaceCameraDirection();
         HandleMove();
-        HandleMovementAnimation();
+        HandleAnimation();
+    }
+
+    void FaceCameraDirection()
+    {
+        Vector3 camForward = playerCamera.forward;
+        camForward.y = 0f;
+        if (camForward.sqrMagnitude > 0.001f)
+        {
+            transform.rotation = Quaternion.LookRotation(camForward.normalized);
+        }
     }
 
     void HandleMove()
     {
         if (_isGrounded && _velocity.y < 0f) _velocity.y = -2f;
-
         float h = Input.GetAxis("Horizontal");
         float v = Input.GetAxis("Vertical");
-        _moveInput = new Vector2(h, v);
-        _sprinting = Input.GetKey(KeyCode.LeftShift);
-        
-        Vector3 camForward = Camera.main.transform.forward;
-        Vector3 camRight = Camera.main.transform.right;
-        camForward.y = 0; 
-        camRight.y = 0;
-        camForward.Normalize();
-        camRight.Normalize();
+        _isRunning = Input.GetKey(KeyCode.LeftShift) && v > 0f;
+        float targetSpeed = _isRunning ? runSpeed : walkSpeed;
+        float targetVelocityX = h * targetSpeed;
+        float targetVelocityZ = v * targetSpeed;
 
-        Vector3 move = camRight * h + camForward * v;
-        float speed = _sprinting ? runSpeed : walkSpeed;
-        _characterController.Move(move * (speed * Time.deltaTime));
+        _currentVelocityX = Mathf.MoveTowards(_currentVelocityX, targetVelocityX,
+            (Mathf.Abs(targetVelocityX) > 0.01f ? acceleration : deceleration) * Time.deltaTime);
+        _currentVelocityZ = Mathf.MoveTowards(_currentVelocityZ, targetVelocityZ,
+            (Mathf.Abs(targetVelocityZ) > 0.01f ? acceleration : deceleration) * Time.deltaTime);
 
-        //Turn left and right
-        if (move.sqrMagnitude > 0.1f)
-        {
-            Quaternion targetRotation = Quaternion.LookRotation(move);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime);
-        }
-        
-        //Jump
+        Vector3 move = transform.right * _currentVelocityX + transform.forward * _currentVelocityZ;
+        _characterController.Move(move * Time.deltaTime);
+
         if (Input.GetButtonDown("Jump") && _isGrounded)
         {
             _velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
 
-        //Gravity
         _velocity.y += gravity * Time.deltaTime;
         _characterController.Move(_velocity * Time.deltaTime);
     }
 
-    void HandleMovementAnimation()
+    void HandleAnimation()
     {
-        float speed = _moveInput.magnitude * (_sprinting ? 1f : 0.5f);
-        characterAnimator.SetFloat(speed1, speed, 0.1f, Time.deltaTime);
+        _animator.SetFloat(_velocityXHash, _currentVelocityX);
+        _animator.SetFloat(_velocityZHash, _currentVelocityZ);
+
+        bool isMoving = Mathf.Abs(_currentVelocityX) > 0.01f || Mathf.Abs(_currentVelocityZ) > 0.01f;
+        _animator.SetBool(_isWalkingHash, isMoving && !_isRunning);
+        _animator.SetBool(_isRunningHash, isMoving && _isRunning);
     }
 
+    void CheckIfGrounded()
+    {
+        Vector3 feetPosition = transform.position + Vector3.down * (_characterController.height / 2f);
+        _isGrounded = Physics.CheckSphere(feetPosition, groundDistance, groundMask);
+    }
+   
    
 
     //Called by PlayerSwitchMode when entering water
@@ -100,10 +130,5 @@ public class PlayerLandMovement : MonoBehaviour
         _characterController.enabled = enable;
         this.enabled = enable;
     }
-
-    void CheckIfGrounded()
-    {
-        Vector3 feetPosition = transform.position + Vector3.down * (_characterController.height / 2f);
-        _isGrounded = Physics.CheckSphere(feetPosition, groundDistance, groundMask);
-    }
+    
 }

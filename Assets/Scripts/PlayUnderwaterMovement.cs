@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerUnderwaterMovement : MonoBehaviour
@@ -6,7 +7,7 @@ public class PlayerUnderwaterMovement : MonoBehaviour
     [Header("Swim Speed")]
     public float swimSpeed = 3f;
     public float sprintMaxSpeed = 7f;
-        
+   
     [Header("Physics feel")]
     public float underwaterDrag = 4f;
     public float underwaterAngularDrag = 2f;
@@ -20,7 +21,7 @@ public class PlayerUnderwaterMovement : MonoBehaviour
     private Rigidbody _rigidbody;
     private float _xRotation;
     private float _yRotation;
-    [SerializeField] private float _currentDepth;
+    [FormerlySerializedAs("_currentDepth")] [SerializeField] private float currentDepth;
 
     void Awake()
     {
@@ -72,17 +73,17 @@ public class PlayerUnderwaterMovement : MonoBehaviour
     void ApplyWaterResistance()
     {
         //Depth increases drag naturally
-        float depthDrag = underwaterDrag + (_currentDepth * dragResistanceScale);
+        float depthDrag = underwaterDrag + (currentDepth * dragResistanceScale);
         _rigidbody.linearDamping = depthDrag;
         _rigidbody.angularDamping = underwaterAngularDrag;
     }
 
     void UpdateDepth()
     {
-        _currentDepth = Mathf.Max(0f, -transform.position.y);
+        currentDepth = Mathf.Max(0f, -transform.position.y);
         if (oxygenSystem is not null)
         {
-            oxygenSystem.SetDepth(_currentDepth);
+            oxygenSystem.SetDepth(currentDepth);
         }
     }
 
