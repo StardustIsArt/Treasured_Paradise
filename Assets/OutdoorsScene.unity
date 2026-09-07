@@ -555,12 +555,12 @@ GameObject:
   m_Component:
   - component: {fileID: 241814231}
   - component: {fileID: 241814230}
-  - component: {fileID: 241814234}
-  - component: {fileID: 241814233}
+  - component: {fileID: 241814236}
+  - component: {fileID: 241814235}
   - component: {fileID: 241814227}
-  - component: {fileID: 241814232}
+  - component: {fileID: 241814234}
   m_Layer: 0
-  m_Name: ThirdPersonCamera
+  m_Name: Third Person Camera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -635,13 +635,13 @@ Transform:
   m_GameObject: {fileID: 241814226}
   serializedVersion: 2
   m_LocalRotation: {x: 0.09186568, y: -0.0030116437, z: 0.010239237, w: 0.99571425}
-  m_LocalPosition: {x: 1706.9501, y: 45.93, z: 206.36}
+  m_LocalPosition: {x: 1708.0698, y: 46.11918, z: 207.36903}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 1.588, y: -12.218, z: -19.742}
---- !u!114 &241814232
+--- !u!114 &241814234
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -660,7 +660,7 @@ MonoBehaviour:
     Controllers: []
   PlayerIndex: -1
   AutoEnableInputs: 1
---- !u!114 &241814233
+--- !u!114 &241814235
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -673,7 +673,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineRotateWithFollowTarget
   Damping: 0
---- !u!114 &241814234
+--- !u!114 &241814236
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -682,10 +682,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 241814226}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36d1163fa822e8b418a0a603ec078d5c, type: 3}
+  m_Script: {fileID: 11500000, guid: 625c14eee3ad46c99df7c7c891ef668a, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineHardLockToTarget
-  Damping: 0
+  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineThirdPersonFollow
+  Damping: {x: 0.1, y: 0.5, z: 0.3}
+  ShoulderOffset: {x: 0.5, y: -0.4, z: 0}
+  VerticalArmLength: 0.4
+  CameraSide: 1
+  CameraDistance: 2
+  AvoidObstacles:
+    Enabled: 0
+    CollisionFilter:
+      serializedVersion: 2
+      m_Bits: 1
+    IgnoreTag: 
+    CameraRadius: 0.2
+    DampingIntoCollision: 0
+    DampingFromCollision: 0.5
 --- !u!1 &299909364
 GameObject:
   m_ObjectHideFlags: 0
@@ -1043,7 +1056,7 @@ Transform:
   m_GameObject: {fileID: 586419431}
   serializedVersion: 2
   m_LocalRotation: {x: 0.09186567, y: -0.0030116434, z: 0.010239236, w: 0.9957142}
-  m_LocalPosition: {x: 0.02, y: 1.98, z: -3.64}
+  m_LocalPosition: {x: 0.64, y: 1.83, z: -0.74}
   m_LocalScale: {x: 0.9, y: 0.5, z: 0.49999976}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1388,7 +1401,7 @@ Transform:
   m_GameObject: {fileID: 852483089}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.0000070862425, y: 0.0000004864384, z: -0.000013601018}
+  m_LocalPosition: {x: 0.54658043, y: -0.00650841, z: -3.853604}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1573,7 +1586,7 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1207978345}
   m_Enabled: 1
-  m_Avatar: {fileID: 0}
+  m_Avatar: {fileID: 9000000, guid: 0bb65bc4d65a6482c8d454b974836d53, type: 3}
   m_Controller: {fileID: 9100000, guid: df0746defa41b4aa4923d15f326840c4, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
@@ -1581,7 +1594,15 @@ Animator:
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_AnimatePhysics: 1
-  m_WarningMessage: 
+  m_WarningMessage: "\nBinding warning: Some generic clip(s) animate transforms that
+    are already bound by a Humanoid avatar. These transforms can only be changed
+    by Humanoid clips.\n\tTransform 'mixamorig:Hips'\n\tTransform 'mixamorig:LeftFoot'\n\tTransform
+    'mixamorig:LeftHandThumb2'\n\tTransform 'mixamorig:LeftHandIndex1'\n\tTransform
+    'mixamorig:LeftHandPinky2'\n\tTransform 'mixamorig:RightHandRing2'\n\tTransform
+    'mixamorig:Spine1'\n\tTransform 'mixamorig:LeftToeBase'\n\tTransform 'mixamorig:LeftHandThumb3'\n\tTransform
+    'mixamorig:RightArm'\n\tand more ...\n\tFrom animation clip 'Idle'\n\tFrom animation
+    clip 'Running'\n\tFrom animation clip 'Walking'\n\tFrom animation clip 'Walking'\n\tFrom
+    animation clip 'Running'"
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
@@ -1595,11 +1616,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1207978345}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b772d0aaa6e8443ce91d3f83f2c92e04, type: 3}
+  m_Script: {fileID: 11500000, guid: e741851cba3ad425c91ecf922cc6b379, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: '::'
-  acceleration: 0.1
-  deceleration: -0.1
+  m_EditorClassIdentifier: Unity.VisualScripting.Core::Unity.VisualScripting.Variables
+  _data:
+    _json: '{"declarations":{"Kind":"Object","collection":{"$content":[],"$version":"A"},"$version":"A"}}'
+    _objectReferences: []
 --- !u!1 &1324972015
 GameObject:
   m_ObjectHideFlags: 0
@@ -1883,7 +1905,7 @@ Transform:
   m_GameObject: {fileID: 1511647255}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1706.93, y: 43.95, z: 210}
+  m_LocalPosition: {x: 1706.93, y: 43.93, z: 210}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -1898,21 +1920,25 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1511647255}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3738d1a5685054082aea7788304b38f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerLandMovement
-  walkSpeed: 2.5
-  runSpeed: 8
-  gravity: -20
-  jumpHeight: 2.5
-  groundDistance: 0.5
+  walkSpeed: 5
+  runSpeed: 10
+  turnSpeed: 120
+  acceleration: 15
+  deceleration: 25
+  gravity: -9.81
+  jumpHeight: 1.5
+  groundDistance: 1
   groundMask:
     serializedVersion: 2
     m_Bits: 64
+  strafeKey: 308
+  playerCamera: {fileID: 852483094}
   characterAnimator: {fileID: 1207978347}
-  playerCamera: {fileID: 241814231}
 --- !u!95 &1511647259
 Animator:
   serializedVersion: 7
@@ -1921,8 +1947,8 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1511647255}
-  m_Enabled: 0
-  m_Avatar: {fileID: 0}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: 0bb65bc4d65a6482c8d454b974836d53, type: 3}
   m_Controller: {fileID: 9100000, guid: df0746defa41b4aa4923d15f326840c4, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
@@ -1930,7 +1956,15 @@ Animator:
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_AnimatePhysics: 1
-  m_WarningMessage: 
+  m_WarningMessage: "\nBinding warning: Some generic clip(s) animate transforms that
+    are already bound by a Humanoid avatar. These transforms can only be changed
+    by Humanoid clips.\n\tTransform 'mixamorig:Hips'\n\tTransform 'mixamorig:LeftFoot'\n\tTransform
+    'mixamorig:LeftHandThumb2'\n\tTransform 'mixamorig:LeftHandIndex1'\n\tTransform
+    'mixamorig:LeftHandPinky2'\n\tTransform 'mixamorig:RightHandRing2'\n\tTransform
+    'mixamorig:Spine1'\n\tTransform 'mixamorig:LeftToeBase'\n\tTransform 'mixamorig:LeftHandThumb3'\n\tTransform
+    'mixamorig:RightArm'\n\tand more ...\n\tFrom animation clip 'Idle'\n\tFrom animation
+    clip 'Running'\n\tFrom animation clip 'Walking'\n\tFrom animation clip 'Walking'\n\tFrom
+    animation clip 'Running'"
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0

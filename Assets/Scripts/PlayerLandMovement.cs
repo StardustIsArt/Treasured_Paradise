@@ -7,16 +7,23 @@ public class PlayerLandMovement : MonoBehaviour
 
     
     [Header("Movement")] 
-    public float walkSpeed = 2.5f;
-    public float runSpeed = 5f;
-    public float acceleration = 0.1f;
-    public float deceleration = 0.5f;
+    public float walkSpeed = 5f;
+    public float runSpeed = 10f;
+    public float turnSpeed = 120f;
+    public float acceleration = 15f;
+    public float deceleration = 25f;
     public float gravity = -9.81f;
     public float jumpHeight = 1.5f;
    
     [Header("Ground Check")] 
     public float groundDistance = 1f;
     public LayerMask groundMask;
+
+    [Header("Strafe")] 
+    public KeyCode strafeKey = KeyCode.LeftAlt;  //hold this to strafe instead of turning
+
+    private int _turnLeftHash;
+    private int _turnRightHash;
     
     [SerializeField] private Transform playerCamera;
     
@@ -42,6 +49,8 @@ public class PlayerLandMovement : MonoBehaviour
         _camera = Camera.main;
         _characterController = GetComponent<CharacterController>();
         _animator = GetComponentInChildren<Animator>();
+        _turnLeftHash = Animator.StringToHash("TurnLeft");
+        _turnRightHash = Animator.StringToHash("TurnRight");
         
         if (_animator == null)
         {
@@ -55,7 +64,7 @@ public class PlayerLandMovement : MonoBehaviour
         _velocityZHash = Animator.StringToHash("VelocityZ");
     }
 
-    void Start()
+    void Start() 
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -64,30 +73,33 @@ public class PlayerLandMovement : MonoBehaviour
     void Update()
     {
         CheckIfGrounded();
-        FaceCameraDirection();
         HandleMove();
         HandleAnimation();
     }
 
-    void FaceCameraDirection()
-    {
-        Vector3 camForward = playerCamera.forward;
-        camForward.y = 0f;
-        if (camForward.sqrMagnitude > 0.001f)
-        {
-            transform.rotation = Quaternion.LookRotation(camForward.normalized);
-        }
-    }
-
+    
     void HandleMove()
     {
         if (_isGrounded && _velocity.y < 0f) _velocity.y = -2f;
-        float h = Input.GetAxis("Horizontal");
-        float v = Input.GetAxis("Vertical");
-        _isRunning = Input.GetKey(KeyCode.LeftShift) && v > 0f;
+        
+        float turn = Input.GetAxis("Horizontal");  // A/D
+        float forward = Input.GetAxis("Vertical");  // W/S
+        bool strafing = Input.GetKey(strafeKey);
+        _isRunning = Input.GetKey(KeyCode.LeftShift) && forward > 0f;
+        
         float targetSpeed = _isRunning ? runSpeed : walkSpeed;
-        float targetVelocityX = h * targetSpeed;
-        float targetVelocityZ = v * targetSpeed;
+        float targetVelocityZ = forward * targetSpeed;
+        float targetVelocityX = 0f;
+
+        if (strafing)
+        {
+            // Leveled up movement: A/D slide sideways instead of turning
+            targetVelocityX = turn * targetSpeed;
+        }
+        else
+        {
+            transform.Rotate(Vector3.up, turn * turnSpeed * Time.deltaTime);
+        }
 
         _currentVelocityX = Mathf.MoveTowards(_currentVelocityX, targetVelocityX,
             (Mathf.Abs(targetVelocityX) > 0.01f ? acceleration : deceleration) * Time.deltaTime);
@@ -104,6 +116,10 @@ public class PlayerLandMovement : MonoBehaviour
 
         _velocity.y += gravity * Time.deltaTime;
         _characterController.Move(_velocity * Time.deltaTime);
+        
+        bool standingStill = Mathf.Abs(_currentVelocityZ) < 0.01f && Mathf.Abs(_currentVelocityX) < 0.01f;
+        _animator.SetBool(_turnLeftHash, !strafing && standingStill && turn < -0.1f);
+        _animator.SetBool(_turnRightHash, !strafing && standingStill && turn > 0.1f);
     }
 
     void HandleAnimation()
