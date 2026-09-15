@@ -49,8 +49,8 @@ public class PlayerLandMovement : MonoBehaviour
         _camera = Camera.main;
         _characterController = GetComponent<CharacterController>();
         _animator = GetComponentInChildren<Animator>();
-        _turnLeftHash = Animator.StringToHash("TurnLeft");
-        _turnRightHash = Animator.StringToHash("TurnRight");
+        _turnLeftHash = Animator.StringToHash("RetargetTurnLeft");
+        _turnRightHash = Animator.StringToHash("RetargetTurnRight");
         
         if (_animator == null)
         {
