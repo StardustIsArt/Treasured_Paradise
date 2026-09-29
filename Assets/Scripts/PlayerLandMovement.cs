@@ -4,8 +4,6 @@ using UnityEngine.Serialization;
 public class PlayerLandMovement : MonoBehaviour
 {
     //private static readonly int speed1 = Animator.StringToHash("Speed");
-
-    
     [Header("Movement")] 
     public float walkSpeed = 5f;
     public float runSpeed = 10f;
@@ -29,18 +27,19 @@ public class PlayerLandMovement : MonoBehaviour
     
     Animator _animator;
     private CharacterController _characterController;
-    [SerializeField] private Animator characterAnimator;
     private Vector3 _velocity;
     private float _currentVelocityX;
     private float _currentVelocityZ;
     private bool _isGrounded;
     private bool _isRunning;
+    private bool _hasJumped;
 
     private int _velocityXHash;
     private int _velocityZHash;
     private int _isWalkingHash;
     private int _isRunningHash;
-    //  private float _velocity = 0.01f;
+    private int _isJumpingHash;
+  
     
     private Camera _camera;
 
@@ -51,6 +50,7 @@ public class PlayerLandMovement : MonoBehaviour
         _animator = GetComponentInChildren<Animator>();
         _turnLeftHash = Animator.StringToHash("RetargetTurnLeft");
         _turnRightHash = Animator.StringToHash("RetargetTurnRight");
+        _isJumpingHash = Animator.StringToHash("IsJumping");
         
         if (_animator == null)
         {
@@ -58,13 +58,13 @@ public class PlayerLandMovement : MonoBehaviour
             enabled = false;
             return;
         }
-        _isWalkingHash = Animator.StringToHash("isWalking"); 
-        _isRunningHash = Animator.StringToHash("isRunning");
+        _isWalkingHash = Animator.StringToHash("IsWalking"); 
+        _isRunningHash = Animator.StringToHash("IsRunning");
         _velocityXHash = Animator.StringToHash("VelocityX");
         _velocityZHash = Animator.StringToHash("VelocityZ");
     }
 
-    void Start() 
+    void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -112,6 +112,12 @@ public class PlayerLandMovement : MonoBehaviour
         if (Input.GetButtonDown("Jump") && _isGrounded)
         {
             _velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            _hasJumped = true;
+        }
+
+        if (_hasJumped && _isGrounded && _velocity.y < 0f)
+        {
+            _hasJumped = false;
         }
 
         _velocity.y += gravity * Time.deltaTime;
@@ -130,6 +136,7 @@ public class PlayerLandMovement : MonoBehaviour
         bool isMoving = Mathf.Abs(_currentVelocityX) > 0.01f || Mathf.Abs(_currentVelocityZ) > 0.01f;
         _animator.SetBool(_isWalkingHash, isMoving && !_isRunning);
         _animator.SetBool(_isRunningHash, isMoving && _isRunning);
+        _animator.SetBool(_isJumpingHash, _hasJumped);
     }
 
     void CheckIfGrounded()
