@@ -10,17 +10,27 @@ public class ItemPickUp : MonoBehaviour
    
    
    private float pickUpDistance = 2f; 
+   private ObjectGrabbable objectGrabbable;
    private void Update()
    {
       if (Input.GetKeyDown(KeyCode.E))
       {
-         if (Physics.Raycast(playerCameraTransform.position, playerCameraTransform.forward, out RaycastHit raycastHit, pickUpDistance, pickUpLayerMask))
-         {
-            if (raycastHit.transform.TryGetComponent(out ObjectGrabbable objectGrabbable))
+         if(!objectGrabbable) {
+            // Not carrying an object, try to grab
+            if (Physics.Raycast(playerCameraTransform.position, playerCameraTransform.forward, out RaycastHit raycastHit, pickUpDistance, pickUpLayerMask))
             {
-               objectGrabbable.Grab(objectGrabPointTransform);
+               if (raycastHit.transform.TryGetComponent(out objectGrabbable))
+               {
+                  objectGrabbable.Grab(objectGrabPointTransform);
+               }
             }
          }
+         else
+         {
+            // Currently holding object, drop
+            objectGrabbable.Drop();
+            objectGrabbable = null;
+         }         
       }
    }
 }
