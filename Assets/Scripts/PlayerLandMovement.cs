@@ -1,13 +1,10 @@
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class PlayerLandMovement : MonoBehaviour
 {
-    //private static readonly int speed1 = Animator.StringToHash("Speed");
     [Header("Movement")] 
     public float walkSpeed = 5f;
     public float runSpeed = 10f;
-    public float turnSpeed = 120f;
     public float acceleration = 15f;
     public float deceleration = 25f;
     public float gravity = -9.81f;
@@ -16,12 +13,6 @@ public class PlayerLandMovement : MonoBehaviour
     [Header("Ground Check")] 
     public float groundDistance = 1f;
     public LayerMask groundMask;
-
-    [Header("Strafe")] 
-    public KeyCode strafeKey = KeyCode.LeftAlt;  //hold this to strafe instead of turning
-
-    private int _turnLeftHash;
-    private int _turnRightHash;
     
     [SerializeField] private Transform playerCamera;
     
@@ -39,22 +30,16 @@ public class PlayerLandMovement : MonoBehaviour
     private int _isWalkingHash;
     private int _isRunningHash;
     private int _isJumpingHash;
-  
-    
-    private Camera _camera;
 
     private void Awake()
     {
-        _camera = Camera.main;
         _characterController = GetComponent<CharacterController>();
         _animator = GetComponentInChildren<Animator>();
-        _turnLeftHash = Animator.StringToHash("RetargetTurnLeft");
-        _turnRightHash = Animator.StringToHash("RetargetTurnRight");
         _isJumpingHash = Animator.StringToHash("IsJumping");
         
         if (_animator == null)
         {
-            Debug.LogError("characterAnimator is not assigned on " + gameObject.name, gameObject);
+            Debug.LogError("No Animator found in children of " + gameObject.name, gameObject);
             enabled = false;
             return;
         }
@@ -74,32 +59,26 @@ public class PlayerLandMovement : MonoBehaviour
     {
         CheckIfGrounded();
         HandleMove();
+        FaceCameraYaw();
         HandleAnimation();
     }
 
-    
+    void CheckIfGrounded()
+    {
+        _isGrounded = Physics.CheckSphere(transform.position, groundDistance, groundMask);
+    }
+
     void HandleMove()
     {
         if (_isGrounded && _velocity.y < 0f) _velocity.y = -2f;
         
-        float turn = Input.GetAxis("Horizontal");  // A/D
+        float strafe = Input.GetAxis("Horizontal");  // A/D
         float forward = Input.GetAxis("Vertical");  // W/S
-        bool strafing = Input.GetKey(strafeKey);
         _isRunning = Input.GetKey(KeyCode.LeftShift) && forward > 0f;
         
         float targetSpeed = _isRunning ? runSpeed : walkSpeed;
         float targetVelocityZ = forward * targetSpeed;
-        float targetVelocityX = 0f;
-
-        if (strafing)
-        {
-            // Leveled up movement: A/D slide sideways instead of turning
-            targetVelocityX = turn * targetSpeed;
-        }
-        else
-        {
-            transform.Rotate(Vector3.up, turn * turnSpeed * Time.deltaTime);
-        }
+        float targetVelocityX = strafe * targetSpeed;
 
         _currentVelocityX = Mathf.MoveTowards(_currentVelocityX, targetVelocityX,
             (Mathf.Abs(targetVelocityX) > 0.01f ? acceleration : deceleration) * Time.deltaTime);
@@ -122,10 +101,12 @@ public class PlayerLandMovement : MonoBehaviour
 
         _velocity.y += gravity * Time.deltaTime;
         _characterController.Move(_velocity * Time.deltaTime);
-        
-        bool standingStill = Mathf.Abs(_currentVelocityZ) < 0.01f && Mathf.Abs(_currentVelocityX) < 0.01f;
-        _animator.SetBool(_turnLeftHash, !strafing && standingStill && turn < -0.1f);
-        _animator.SetBool(_turnRightHash, !strafing && standingStill && turn > 0.1f);
+    }
+
+    void FaceCameraYaw()
+    {
+        // Body matches the camera's horizontal facing; pitch stays on the camera only
+        transform.rotation = Quaternion.Euler(0f, playerCamera.eulerAngles.y, 0f);
     }
 
     void HandleAnimation()
@@ -139,12 +120,7 @@ public class PlayerLandMovement : MonoBehaviour
         _animator.SetBool(_isJumpingHash, _hasJumped);
     }
 
-    void CheckIfGrounded()
-    {
-        Vector3 feetPosition = transform.position + Vector3.down * (_characterController.height / 2f);
-        _isGrounded = Physics.CheckSphere(feetPosition, groundDistance, groundMask);
-    }
-   
+
    
 
     //Called by PlayerSwitchMode when entering water
