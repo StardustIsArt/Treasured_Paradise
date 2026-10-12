@@ -23,7 +23,7 @@ public class ObjectGrabbable : MonoBehaviour
 
   public void FixedUpdate()
   {
-    if (!objectGrabPointTransform)
+    if (objectGrabPointTransform != null)
     {
       float lerpSpeed = 10f;
       Vector3 newPosition = Vector3.Lerp(transform.position, objectGrabPointTransform.position, Time.deltaTime * lerpSpeed);
