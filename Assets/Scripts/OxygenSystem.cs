@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class OxygenSystem : MonoBehaviour
 {
-    public PlayerData PlayerData;
+    [SerializeField] public PlayerData PlayerData;
 
     public float depthMultiplierPer10M = 0.02f;
     public float springDrainBonus = 0.5f;

@@ -12,7 +12,7 @@ public class PlayerModeSwitch : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag($"Water Volume") && !_isUnderwater)
+        if (other.CompareTag($"WaterVolume") && !_isUnderwater)
         {
             EnterWater();
         }
@@ -20,7 +20,7 @@ public class PlayerModeSwitch : MonoBehaviour
 
     void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag($"Water Volume") && _isUnderwater)
+        if (other.CompareTag($"WaterVolume") && _isUnderwater)
         {
             ExitWater();
         }
@@ -39,7 +39,7 @@ public class PlayerModeSwitch : MonoBehaviour
         playerRigidbody.linearVelocity = Vector3.zero;
         underwaterMovement.EnableUnderwaterMode(true);
             
-        Debug.Log("Entered Water");
+        Debug.Log("EnteredWater");
     }
 
     void ExitWater()
@@ -54,6 +54,6 @@ public class PlayerModeSwitch : MonoBehaviour
         characterController.enabled = true;
         landMovement.EnableLandMode(true);
             
-        Debug.Log("Exited Water");
+        Debug.Log("ExitedWater");
     }
 }

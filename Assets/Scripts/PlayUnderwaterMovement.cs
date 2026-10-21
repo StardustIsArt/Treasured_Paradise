@@ -5,8 +5,8 @@ using UnityEngine.Serialization;
 public class PlayerUnderwaterMovement : MonoBehaviour
 {
     [Header("Swim Speed")]
-    public float swimSpeed = 3f;
-    public float sprintMaxSpeed = 7f;
+    public float swimSpeed = 12f;
+    public float sprintMaxSpeed = 24f;
    
     [Header("Physics feel")]
     public float underwaterDrag = 4f;
@@ -16,22 +16,21 @@ public class PlayerUnderwaterMovement : MonoBehaviour
     [Header("References")]
     public Transform cameraTransform;
     public OxygenSystem oxygenSystem;
-    public float mouseSensitivity = 15f;
     
     private Rigidbody _rigidbody;
-    private float _xRotation;
-    private float _yRotation;
     [FormerlySerializedAs("_currentDepth")] [SerializeField] private float currentDepth;
 
     void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
         _rigidbody.useGravity = false;
+        _rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
+        enabled = false;
     }
 
     void Update()
     {
-        HandleLook();
+        FaceCameraYaw();
         UpdateDepth();
     }
 
@@ -41,18 +40,10 @@ public class PlayerUnderwaterMovement : MonoBehaviour
         ApplyWaterResistance();
     }
 
-    void HandleLook()
+    void FaceCameraYaw()
     {
-        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
-        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
-        
-        _xRotation -= mouseY;
-        _xRotation = Mathf.Clamp(_xRotation, -90f, 90f);
-        
-        cameraTransform.localRotation = Quaternion.Euler(_xRotation, 0f, 0f);
-        transform.Rotate(Vector3.up, mouseX);
+        transform.rotation = Quaternion.Euler(0f, cameraTransform.eulerAngles.y, 0f);
     }
-
     void HandleSwim()
     {
         float h =  Input.GetAxis("Horizontal");

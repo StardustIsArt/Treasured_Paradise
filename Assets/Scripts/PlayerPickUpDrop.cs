@@ -15,7 +15,7 @@ public class ItemPickUp : MonoBehaviour
    {
       if (Input.GetKeyDown(KeyCode.E))
       {
-         if(objectGrabbable == null) {
+         if(objectGrabbable is null) {
             // Not carrying an object, try to grab
             if (Physics.Raycast(playerCameraTransform.position, playerCameraTransform.forward, out RaycastHit raycastHit, pickUpDistance, pickUpLayerMask))
             {
