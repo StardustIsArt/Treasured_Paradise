@@ -4,10 +4,9 @@ using UnityEngine.Serialization;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerUnderwaterMovement : MonoBehaviour
 {
-    [Header("Swim Speed")]
-    public float swimSpeed = 12f;
+    [Header("Swim Speed")] public float swimSpeed = 12f;
     public float sprintMaxSpeed = 24f;
-   
+    
     [Header("Physics feel")]
     public float underwaterDrag = 4f;
     public float underwaterAngularDrag = 2f;
@@ -45,11 +44,13 @@ public class PlayerUnderwaterMovement : MonoBehaviour
         transform.rotation = Quaternion.Euler(0f, cameraTransform.eulerAngles.y, 0f);
     }
     void HandleSwim()
-    {
+    {   
         float h =  Input.GetAxis("Horizontal");
         float v = Input.GetAxis("Vertical");
+        float vertical = 0f;
         
         Vector3 swimDirection = cameraTransform.forward * v + cameraTransform.right * h;
+        
         bool sprinting = Input.GetKey(KeyCode.LeftShift);
         float speed = sprinting ? sprintMaxSpeed : swimSpeed;
 
@@ -57,9 +58,9 @@ public class PlayerUnderwaterMovement : MonoBehaviour
         {
             oxygenSystem.isSprinting = sprinting;
         }
-        
+
         _rigidbody.AddForce(swimDirection.normalized * speed, ForceMode.Acceleration);
-    }
+    }  
 
     void ApplyWaterResistance()
     {

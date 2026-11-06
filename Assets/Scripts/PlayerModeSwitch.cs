@@ -6,7 +6,8 @@ public class PlayerModeSwitch : MonoBehaviour
     public PlayerUnderwaterMovement underwaterMovement;
     public Rigidbody playerRigidbody;
     public CharacterController characterController;
-        
+    public CapsuleCollider swimCollider;
+    
     //Tag water volume trigger as "WaterVolume" (Unity)
     private bool _isUnderwater;
 
@@ -17,18 +18,11 @@ public class PlayerModeSwitch : MonoBehaviour
             EnterWater();
         }
     }
-
-    void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag($"WaterVolume") && _isUnderwater)
-        {
-            ExitWater();
-        }
-    }
-
+    
     void EnterWater()
     {
         _isUnderwater = true;
+        swimCollider.enabled = true;
             
         //Disable land controller
         landMovement.EnableLandMode(false);
@@ -42,15 +36,26 @@ public class PlayerModeSwitch : MonoBehaviour
         Debug.Log("EnteredWater");
     }
 
+    void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("WaterVolume") && !_isUnderwater) return;
+
+        if (other.bounds.Contains(transform.position)) return;
+        
+        ExitWater();
+    }
+
     void ExitWater()
     {
         _isUnderwater = false;
+       
             
         //Disable underwater controller
         underwaterMovement.EnableUnderwaterMode(false);
         playerRigidbody.isKinematic = true;
             
         //Re-enable land controller
+        swimCollider.enabled = false;
         characterController.enabled = true;
         landMovement.EnableLandMode(true);
             
