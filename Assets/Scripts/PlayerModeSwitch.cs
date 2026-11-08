@@ -13,7 +13,7 @@ public class PlayerModeSwitch : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag($"WaterVolume") && !_isUnderwater)
+        if (other.CompareTag("WaterVolume") && !_isUnderwater)
         {
             EnterWater();
         }

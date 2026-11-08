@@ -47,7 +47,7 @@ public class PlayerUnderwaterMovement : MonoBehaviour
     {   
         float h =  Input.GetAxis("Horizontal");
         float v = Input.GetAxis("Vertical");
-        float vertical = 0f;
+       // float vertical = 0f;
         
         Vector3 swimDirection = cameraTransform.forward * v + cameraTransform.right * h;
         
