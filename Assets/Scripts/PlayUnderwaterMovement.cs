@@ -18,19 +18,37 @@ public class PlayerUnderwaterMovement : MonoBehaviour
     
     private Rigidbody _rigidbody;
     [FormerlySerializedAs("_currentDepth")] [SerializeField] private float currentDepth;
+    
+    Animator _animator;
+    private bool _IsSwimming;
+    private int _isSwimmingHash;
+    private int _swimSpeedHash;
 
     void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
+        _animator = GetComponentInChildren<Animator>();
+        _isSwimmingHash = Animator.StringToHash("IsSwimming"); 
+        _swimSpeedHash = Animator.StringToHash("SwimSpeed");
+        
+        if (_animator == null)
+        {
+            Debug.LogWarning("No Animator found in children of " + gameObject.name, gameObject);
+            enabled = false;
+            return;
+        }
+       
         _rigidbody.useGravity = false;
         _rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
         enabled = false;
+        
     }
 
     void Update()
     {
         FaceCameraYaw();
         UpdateDepth();
+        _animator.SetFloat(_swimSpeedHash, _rigidbody.linearVelocity.magnitude);
     }
 
     void FixedUpdate()
@@ -43,17 +61,30 @@ public class PlayerUnderwaterMovement : MonoBehaviour
     {
         transform.rotation = Quaternion.Euler(0f, cameraTransform.eulerAngles.y, 0f);
     }
+    
+    void UpdateDepth()
+    {
+        currentDepth = Mathf.Max(0f, -transform.position.y);
+        if (oxygenSystem is not null)
+        {
+            oxygenSystem.SetDepth(currentDepth);
+        }
+    }
+
+ 
     void HandleSwim()
     {   
         float h =  Input.GetAxis("Horizontal");
         float v = Input.GetAxis("Vertical");
-       // float vertical = 0f;
         
         Vector3 swimDirection = cameraTransform.forward * v + cameraTransform.right * h;
         
         bool sprinting = Input.GetKey(KeyCode.LeftShift);
         float speed = sprinting ? sprintMaxSpeed : swimSpeed;
-
+        _IsSwimming = true;
+       
+     
+        
         if (oxygenSystem is not null)
         {
             oxygenSystem.isSprinting = sprinting;
@@ -70,17 +101,12 @@ public class PlayerUnderwaterMovement : MonoBehaviour
         _rigidbody.angularDamping = underwaterAngularDrag;
     }
 
-    void UpdateDepth()
-    {
-        currentDepth = Mathf.Max(0f, -transform.position.y);
-        if (oxygenSystem is not null)
-        {
-            oxygenSystem.SetDepth(currentDepth);
-        }
-    }
+    
+    
 
     public void EnableUnderwaterMode(bool enable)
     {
+        _animator.SetBool(_isSwimmingHash, enable);
         _rigidbody.useGravity = false;
         _rigidbody.linearDamping = enable ? underwaterDrag : 0;
         this.enabled = enable;

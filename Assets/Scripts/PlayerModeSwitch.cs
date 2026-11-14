@@ -7,16 +7,35 @@ public class PlayerModeSwitch : MonoBehaviour
     public Rigidbody playerRigidbody;
     public CharacterController characterController;
     public CapsuleCollider swimCollider;
+
+    [Header("Water")] public Transform waterSurface;
+    public Collider waterVolume;
+    public float swimDepth = 1.4f;
+    public float wadeDepth = 0.8f;
     
     //Tag water volume trigger as "WaterVolume" (Unity)
     private bool _isUnderwater;
 
-    void OnTriggerEnter(Collider other)
+    void Update()
     {
-        if (other.CompareTag("WaterVolume") && !_isUnderwater)
+        float depth = waterSurface.position.y - transform.position.y;
+        
+        if (!_isUnderwater)
         {
-            EnterWater();
+            if (depth > swimDepth && IsOverWater()) EnterWater();
         }
+        else
+        {
+            bool onGround = Physics.CheckSphere(transform.position, landMovement.groundDistance, landMovement.groundMask);
+            if (onGround && depth < wadeDepth) ExitWater();
+        }
+    }
+
+    bool IsOverWater()
+    {
+        Bounds bounds = waterVolume.bounds;
+        Vector3 position = transform.position;
+        return position.x > bounds.min.x && position.x < bounds.max.x && position.z > bounds.min.z && position.z < bounds.max.z;;
     }
     
     void EnterWater()
@@ -36,22 +55,13 @@ public class PlayerModeSwitch : MonoBehaviour
         Debug.Log("EnteredWater");
     }
 
-    void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("WaterVolume") && !_isUnderwater) return;
-
-        if (other.bounds.Contains(transform.position)) return;
-        
-        ExitWater();
-    }
-
     void ExitWater()
     {
         _isUnderwater = false;
        
-            
         //Disable underwater controller
         underwaterMovement.EnableUnderwaterMode(false);
+        playerRigidbody.linearVelocity = Vector3.zero;
         playerRigidbody.isKinematic = true;
             
         //Re-enable land controller
