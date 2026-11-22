@@ -635,7 +635,7 @@ Transform:
   m_GameObject: {fileID: 241814226}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1706.93, y: 26.17, z: 372.79}
+  m_LocalPosition: {x: 1706.93, y: 22.31, z: 372.79}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1701,7 +1701,7 @@ Transform:
   m_GameObject: {fileID: 852483089}
   serializedVersion: 2
   m_LocalRotation: {x: 0.00018161633, y: 0.003941397, z: -0.009918538, w: 0.9999431}
-  m_LocalPosition: {x: 0.000058658978, y: 0.000050371164, z: -0.000013029016}
+  m_LocalPosition: {x: -0.00000004560066, y: 0.00000072050835, z: -0.000012218374}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1851,7 +1851,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0bb65bc4d65a6482c8d454b974836d53, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.017
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0bb65bc4d65a6482c8d454b974836d53, type: 3}
       propertyPath: m_LocalPosition.z
@@ -3068,7 +3068,7 @@ Transform:
   m_GameObject: {fileID: 1511647255}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1706.93, y: 24.57, z: 372.64}
+  m_LocalPosition: {x: 1706.93, y: 20.71, z: 372.64}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -3180,6 +3180,10 @@ MonoBehaviour:
   playerRigidbody: {fileID: 1511647262}
   characterController: {fileID: 1511647256}
   swimCollider: {fileID: 1511647264}
+  waterSurface: {fileID: 299909366}
+  waterVolume: {fileID: 1923426145}
+  swimDepth: 1.4
+  wadeDepth: 0.8
 --- !u!136 &1511647264
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -3889,7 +3893,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1923426146}
   - component: {fileID: 1923426145}
-  m_Layer: 0
+  m_Layer: 4
   m_Name: WaterVolume
   m_TagString: WaterVolume
   m_Icon: {fileID: 0}
@@ -3926,7 +3930,7 @@ Transform:
   m_GameObject: {fileID: 1923426144}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1739, y: -236.8, z: 467}
+  m_LocalPosition: {x: 1739, y: -229.6, z: 467}
   m_LocalScale: {x: 300, y: 500, z: 300}
   m_ConstrainProportionsScale: 0
   m_Children: []
